@@ -103,8 +103,8 @@ export default class CustomMultiPicker extends Component {
     const labels = Object.keys(list).map(i => list[i])
     const values = Object.keys(list)
     return (
-      <View onLayout={(evt) => { this.getNewDimensions(evt) }}>
-        {this.props.search && <View style={{ flexDirection: 'row', height: 55 }}>
+      <View onLayout={(evt) => { this.getNewDimensions(evt) }} style={{ flex: 1, marginBottom: 20 }}>
+        {this.props.search && <View style={{ flexDirection: 'row', height: 100 }}>
           <View style={{ marginTop: 15, marginLeft: 15, backgroundColor: 'transparent' }}>
             <Icon name={this.props.searchIconName || "ios-search"} color={this.props.searchIconColor || this.props.iconColor} size={this.props.searchIconSize || this.props.iconSize || 25} />
           </View>
@@ -129,7 +129,7 @@ export default class CustomMultiPicker extends Component {
           />
         </View>}
         <ScrollView
-          style={[{ padding: 5, height: this.props.scrollViewHeight }, this.props.scrollViewStyle]}
+          contentContainerStyle={[{ padding: 5, height: this.props.scrollViewHeight }, this.props.scrollViewStyle]}
         >
           {labels.map((label, index) => {
             const itemKey = returnValue == "label" ? label : values[index]
