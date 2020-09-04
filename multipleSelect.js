@@ -72,7 +72,7 @@ export default class CustomMultiPicker extends Component {
         })
       }
     }
-    this.props.callback(selected)
+    this.props.callback(updatedSelection)
   }
 
   onSearch = (text) => {
