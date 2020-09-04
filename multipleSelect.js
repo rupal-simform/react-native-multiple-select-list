@@ -4,20 +4,21 @@
  * www.atasmohammadi.net
  * version 1.0
  */
-import React, {Component, PropTypes} from "react";
+import React, { Component, PropTypes } from "react";
 import {
   Text,
   View,
   Dimensions,
   TouchableOpacity,
   ScrollView,
-  TextInput
+  TextInput,
+  Image
 } from 'react-native';
 var { width, height } = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class CustomMultiPicker extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       pageWidth: Dimensions.get('window').width,
@@ -29,7 +30,7 @@ export default class CustomMultiPicker extends Component {
 
   componentDidMount = () => {
     const selected = this.props.selected
-    if(typeof selected === "object"){
+    if (typeof selected === "object") {
       selected.map(select => {
         this._onSelect(select)
       })
@@ -38,18 +39,18 @@ export default class CustomMultiPicker extends Component {
     }
   }
 
-  getNewDimensions(event){
-        var pageHeight = event.nativeEvent.layout.height
-        var pageWidth = event.nativeEvent.layout.width
-        this.setState({
-            pageHeight, pageWidth
-        })
-    }
+  getNewDimensions(event) {
+    var pageHeight = event.nativeEvent.layout.height
+    var pageWidth = event.nativeEvent.layout.width
+    this.setState({
+      pageHeight, pageWidth
+    })
+  }
 
   _onSelect = (item) => {
     var selected = this.state.selected
-    if(this.props.multiple){
-      if(selected.indexOf(item) == -1){
+    if (this.props.multiple) {
+      if (selected.indexOf(item) == -1) {
         selected.push(item)
         this.setState({
           selected: selected
@@ -61,7 +62,7 @@ export default class CustomMultiPicker extends Component {
         })
       }
     } else {
-      if(selected.indexOf(item) == -1){
+      if (selected.indexOf(item) == -1) {
         selected = [item]
         this.setState({
           selected: selected
@@ -84,7 +85,7 @@ export default class CustomMultiPicker extends Component {
 
   _isSelected = (item) => {
     const selected = this.state.selected
-    if(selected.indexOf(item) == -1){
+    if (selected.indexOf(item) == -1) {
       return false
     }
     return true
@@ -92,24 +93,24 @@ export default class CustomMultiPicker extends Component {
 
   filterObjectByValue = (obj, predicate) => {
     return Object.keys(obj)
-          .filter( key => predicate(obj[key]) )
-          .reduce( (res, key) => (res[key] = obj[key], res), {} )
+      .filter(key => predicate(obj[key]))
+      .reduce((res, key) => (res[key] = obj[key], res), {})
   }
 
-  render(){
+  render() {
     const { options, returnValue } = this.props;
     const list = this.state.searchText ? this.filterObjectByValue(options, option => option.toLowerCase().includes(this.state.searchText)) : options
     const labels = Object.keys(list).map(i => list[i])
     const values = Object.keys(list)
-    return(
-      <View onLayout={(evt)=>{this.getNewDimensions(evt)}}>
+    return (
+      <View onLayout={(evt) => { this.getNewDimensions(evt) }}>
         {this.props.search && <View style={{ flexDirection: 'row', height: 55 }}>
           <View style={{ marginTop: 15, marginLeft: 15, backgroundColor: 'transparent' }}>
             <Icon name={this.props.searchIconName || "ios-search"} color={this.props.searchIconColor || this.props.iconColor} size={this.props.searchIconSize || this.props.iconSize || 25} />
           </View>
           <TextInput
             style={{
-              width: this.state.pageWidth-20,
+              width: this.state.pageWidth - 20,
               height: 35,
               margin: 0,
               marginTop: 10,
@@ -132,7 +133,7 @@ export default class CustomMultiPicker extends Component {
         >
           {labels.map((label, index) => {
             const itemKey = returnValue == "label" ? label : values[index]
-            return(
+            return (
               <TouchableOpacity
                 key={Math.round(Math.random() * 1000000)}
                 style={[{
@@ -148,7 +149,7 @@ export default class CustomMultiPicker extends Component {
                   alignItems: 'center',
                   borderRadius: this.props.rowRadius
                 },
-                  this.props.itemStyle
+                this.props.itemStyle
                 ]}
                 onPress={() => {
                   this._onSelect(itemKey)
@@ -163,13 +164,15 @@ export default class CustomMultiPicker extends Component {
                 {
 
                   this._isSelected(itemKey) ?
-                  <Icon name={this.props.selectedIconName}
-                        style={[{color: this.props.iconColor, fontSize: this.props.iconSize}, this.props.selectedIconStyle]}
-                        />
-                  :
-                  <Icon name={this.props.unselectedIconName}
-                        style={[{color: this.props.iconColor, fontSize: this.props.iconSize}, this.props.unselectedIconStyle]}
-                        />
+                    <Image
+                      source={this.props.selectedIconName}
+                      style={[{ height: this.props.iconSize, width: this.props.iconSize }, this.props.selectedIconStyle]}
+                    />
+                    :
+                    <Image
+                      source={this.props.unselectedIconName}
+                      style={[{ height: this.props.iconSize, width: this.props.iconSize }, this.props.unselectedIconStyle]}
+                    />
                 }
               </TouchableOpacity>
             )
