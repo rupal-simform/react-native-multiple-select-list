@@ -14,7 +14,7 @@ import {
   TextInput,
   Image
 } from 'react-native';
-var { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class CustomMultiPicker extends Component {
@@ -24,66 +24,64 @@ export default class CustomMultiPicker extends Component {
       pageWidth: Dimensions.get('window').width,
       pageHeight: Dimensions.get('window').height,
       searchText: null,
-      selected: []
+      selected: new Array()
     };
   }
 
   componentDidMount = () => {
     const selected = this.props.selected
-    if (typeof selected === "object") {
+    if (typeof selected === "object" && selected.length > 0) {
       selected.map(select => {
-        this._onSelect(select)
+        this.onSelect(select)
       })
-    } else {
-      this._onSelect(selected)
     }
   }
 
   getNewDimensions(event) {
-    var pageHeight = event.nativeEvent.layout.height
-    var pageWidth = event.nativeEvent.layout.width
+    const pageHeight = event.nativeEvent.layout.height
+    const pageWidth = event.nativeEvent.layout.width
     this.setState({
       pageHeight, pageWidth
     })
   }
 
-  _onSelect = (item) => {
-    var selected = this.state.selected
+  onSelect = (item) => {
+    let updatedSelection = this.state.selected
     if (this.props.multiple) {
-      if (selected.indexOf(item) == -1) {
-        selected.push(item)
+      if (updatedSelection.indexOf(item) == -1) {
+        updatedSelection.push(item)
         this.setState({
-          selected: selected
+          selected: updatedSelection
         })
       } else {
-        selected = selected.filter(i => i != item)
+        updatedSelection = updatedSelection.filter(i => i != item)
         this.setState({
-          selected: selected
+          selected: updatedSelection
         })
       }
     } else {
-      if (selected.indexOf(item) == -1) {
-        selected = [item]
+      if (updatedSelection.indexOf(item) == -1) {
+        updatedSelection = [item]
         this.setState({
-          selected: selected
+          selected: updatedSelection
         })
       } else {
-        selected = []
+        updatedSelection = new Array()
         this.setState({
-          selected: selected
+          selected: updatedSelection
         })
       }
     }
     this.props.callback(selected)
   }
 
-  _onSearch = (text) => {
+  onSearch = (text) => {
     this.setState({
       searchText: text.length > 0 ? text.toLowerCase() : null
     })
   }
 
-  _isSelected = (item) => {
+  isSelected = (item) => {
     const selected = this.state.selected
     if (selected.indexOf(item) == -1) {
       return false
@@ -121,7 +119,7 @@ export default class CustomMultiPicker extends Component {
               borderWidth: 1,
               borderRadius: 5
             }}
-            onChangeText={(text) => { this._onSearch(text) }}
+            onChangeText={(text) => { this.onSearch(text) }}
             clearButtonMode={'always'}
             placeholder={this.props.placeholder}
             placeholderTextColor={this.props.placeholderTextColor}
@@ -152,7 +150,7 @@ export default class CustomMultiPicker extends Component {
                 this.props.itemStyle
                 ]}
                 onPress={() => {
-                  this._onSelect(itemKey)
+                  this.onSelect(itemKey)
                 }}
               >
                 {React.isValidElement(label)
@@ -163,7 +161,7 @@ export default class CustomMultiPicker extends Component {
                 }
                 {
 
-                  this._isSelected(itemKey) ?
+                  this.isSelected(itemKey) ?
                     <Image
                       source={this.props.selectedIconName}
                       style={[{ height: this.props.iconSize, width: this.props.iconSize }, this.props.selectedIconStyle]}
